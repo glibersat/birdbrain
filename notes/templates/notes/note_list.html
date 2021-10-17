@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<h2>Notes</h2>
+
+<form method="GET" action=".">
+<div class="bg-white shadow p-4 flex w-2/3">
+    <span class="w-auto flex justify-end items-center text-gray-500 p-2">
+        <i class="material-icons text-3xl">S</i>
+    </span>
+    <input name="query" class="w-full rounded p-2" type="text" value="{{ query|default:'' }}"placeholder="A word or another...">
+    <button class="bg-red-400 hover:bg-red-300 rounded text-white p-2 pl-4 pr-4">
+        <p class="font-semibold text-xs">Search</p>
+    </button>
+</div>
+</form>
+
+{% if query %}
+<span>Recherche : {{ query }} (<a href="{% url 'notes-note-list' %}">clear</a>)</span>
+{% endif %}
+
+
+    <ul class="mt-8">
+        {% for note in notes %}
+        <div class="card shadow-2xl lg:card-side bg-primary text-primary-content my-1">
+            <div class="card-body">
+                <li><a href="{% url 'notes-note-detail' note.pk %}">{{ note.content }}</a> ({{ note.created_on|naturalday }})</li>
+            </div>
+        </div>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<div class="card bordered">
+    <div class="card-body">
+        <p class="text-2xl">{{ note.content }}</p>
+    </div>
+    {% if note.source %}
+    <div>
+        Source: {{ note.source }}
+    </div>
+    {% endif %}
+    <div class="card-actions">
+        {% for word in words %}
+        <div class="badge badge-dark">{{ word.0 }}</div> 
+        {% endfor %}
+    </div>
+</div>
+
+<hr>
+
+<h2>Statements</h2>
+
+<ul class="mb-4">
+    {% for statement in note.statements.all %}
+    <li>
+        <a class="link" href="{% url 'notes-literal-detail' statement.subject.id %}">{{ statement.subject.label }}</a>
+        {{ statement.predicate.label }}
+        <a class="link" href="{% url 'notes-literal-detail' statement.object.id %}">{{ statement.object.label }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<form method="POST" action="{% url 'notes-note-statement-add' note.pk %}">
+    {% csrf_token %}
+    {{ statement_form }}
+    <button class="btn btn-primary">Ajouter</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<h2>{{ literal.label }}</h2>
+
+<hr>
+
+<h2>As Subject</h2>
+
+<ul class="mb-4">
+    {% for statement in literal.statements_subjects.all %}
+    <li>
+        {{ statement.subject.label }}
+        {{ statement.predicate.label }}
+        <a class="link" href="{% url 'notes-literal-detail' statement.object.id %}">{{ statement.object.label }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<h2>As Object</h2>
+
+<ul class="mb-4">
+    {% for statement in literal.statements_objects.all %}
+    <li>
+        <a class="link" href="{% url 'notes-literal-detail' statement.subject.id %}">{{ statement.subject.label }}</a>
+        {{ statement.predicate.label }}
+        {{ statement.object.label }}
+    </li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

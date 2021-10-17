@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView
+from nltk.stem import WordNetLemmatizer
 
 from .forms import StatementForm
 from .models import Literal, Note, Predicate, Statement
@@ -27,7 +28,12 @@ class NoteDetail(DetailView):
             w.lower() for w in allWords if w not in stopwords
         )
 
-        context["words"] = allWordExceptStopDist.most_common(5)
+        # XXX Could use snowball stemmer here (multi language)
+        lemmatizer = WordNetLemmatizer()
+        context["words"] = [
+            (lemmatizer.lemmatize(word[0]), word[1])
+            for word in allWordExceptStopDist.most_common(5)
+        ]
 
         context["statement_form"] = StatementForm()
         return context
