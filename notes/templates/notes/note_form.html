@@ -2,10 +2,17 @@
 
 {% block content %}
 
-<form class="w-full p-10 mx-auto  h-full">
-    <button type="submit">Enregistrer</button>
+<form method="POST" action="{% url 'notes-note-create' %}" class="w-full mx-auto  h-full">
+    {% csrf_token %}
+        <div class="form-control inline">
+            <button class="btn btn-primary m-3" type="submit">Enregistrer</button>
+            <input type="text" name="source" placeholder="source" class="input input-secondary input-bordered">
+        </div>
 
-    <textarea autofocus class="resize-none h-full text-6xl w-full border-0 outline-none focus:ring-0 focus:outline-none" name="content"></textarea>
+    <div class="p-10 h-full">
+        <textarea autofocus class="resize-none h-full text-6xl w-full border-0 outline-none focus:ring-0 focus:outline-none" name="content"></textarea>
+    </div>
+
 </form>
 
 

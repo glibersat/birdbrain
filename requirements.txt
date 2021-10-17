@@ -1,4 +1,4 @@
-django-bootstrap5
 django-sass-processor
 django-compressor
+django-tailwind
 libsass

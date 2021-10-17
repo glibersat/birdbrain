@@ -1,0 +1,16 @@
+bandit
+black
+coverage
+django-debug-toolbar
+ipython
+model_bakery
+pytest
+pytest-cov
+pytest-coverage
+pytest-django
+pytest-icdiff
+pytest-mock
+pytest-sugar
+pytest-xdist
+pytz
+semgrep

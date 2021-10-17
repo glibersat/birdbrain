@@ -17,9 +17,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from notes.views import NoteCreate
+from notes.urls import urlpatterns as notes_urls
+from notes.views import Home
 
 urlpatterns = [
-    path("", NoteCreate.as_view(), name="notes-note-create"),
+    path("", Home.as_view(), name="home"),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+urlpatterns.extend(notes_urls)
