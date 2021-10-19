@@ -2,3 +2,8 @@ django-sass-processor
 django-compressor
 django-tailwind
 libsass
+
+markdown
+markdown-link-attr-modifier==0.2.0
+markdownify
+beautifulsoup4==4.10.0

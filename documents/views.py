@@ -34,7 +34,6 @@ class DocumentImport(CreateView):
         with urlopen(request) as f:
             soup = BeautifulSoup(f, "lxml")
             form.instance.content_raw = str(soup)
-        # form.instance.content_plain = document.text_content()
 
     def form_valid(self, form):
         self.scrap_uri(form)
