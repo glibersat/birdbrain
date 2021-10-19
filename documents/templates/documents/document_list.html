@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<h2>Documents</h2>
+
+<div>
+    <ul class="mt-8">
+        {% for document in documents %}
+        <div class="card shadow-2xl lg:card-side bg-primary text-primary-content my-1">
+            <div class="card-body">
+                <li><a class="" href="{% url 'documents-document-detail' document.pk %}">{{ document.title|default:"document.uri" }}</a> ({{ document.created_on|naturalday }})</li>
+            </div>
+        </div>
+    {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

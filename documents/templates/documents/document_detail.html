@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block javascript %}
+<script src="{% static 'js/recogito-polyfills.js' %}"></script>
+<script src="{% static 'js/recogito.min.js' %}"></script>
+
+<script type="text/javascript">
+ (function() {
+     var r = Recogito.init({
+         content: document.getElementById('doc-content') // ID or DOM element
+     });
+
+     // Add an event handler
+     r.on('createAnnotation', function(annotation) { /** **/ });
+
+     r.on('createAnnotation', async (annotation, overrideId) => {
+         // POST to the server and receive a new ID
+        console.debug(annotation);
+     });
+ })();
+</script>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/recogito.min.css' %}">
+{% endblock %}
+
+{% load humanize %}
+
+{% block content %}
+
+<div class="card bordered">
+    <h2>{{ document.title }}</h2>
+    <div>
+        {% for tag in document.tags %}
+        <div class="badge badge-outline">{{ tag }}</div> 
+        {% endfor %}
+    </div>
+    <div id="doc-content" class="card-body">
+       {{ document.content_markdown|safe }}
+    </div>
+    <hr/>
+    <div class="mt-2">
+        <p>Source: <a href="{{ document.uri }}" target="_new">{{ document.uri }}</a></p>
+        <p>Imported on: {{ document.created_on }}</p>
+    </div>
+</div>
+
+<hr>
+
+{% endblock %}

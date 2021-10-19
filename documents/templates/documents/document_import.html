@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="flex w-full mx-auto h-2/3 items-center">
+    <div class="w-2/3 mx-auto pb-1/3">
+        <form method="POST" class="form-control inline" action="{% url 'documents-document-import' %}">
+            {% csrf_token %}
+            <label class="label">
+                <span class="label-text text-lg">Web Address</span>
+            </label> 
+            <input type="text" name="uri" placeholder="ex: http://example.com/b2" class="input input-bordered w-10/12">
+            <button class="btn btn-primary w-auto" type="submit">Import</button>
+        </form>
+    </div>
+
+</div>
+
+
+{% endblock %}
