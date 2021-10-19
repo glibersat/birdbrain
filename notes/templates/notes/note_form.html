@@ -5,7 +5,7 @@
 <form method="POST" action="{% url 'notes-note-create' %}" class="w-full mx-auto  h-full">
     {% csrf_token %}
         <div class="form-control inline">
-            <button class="btn btn-primary m-3" type="submit">Enregistrer</button>
+            <button class="btn btn-primary m-3" type="submit">Save</button>
             <input type="text" name="source" placeholder="source" class="input input-secondary input-bordered">
         </div>
 

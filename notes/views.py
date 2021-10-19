@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView
 from nltk.stem import WordNetLemmatizer
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 
 from .forms import StatementForm
 from .models import Literal, Note, Predicate, Statement
@@ -25,7 +26,7 @@ class NoteDetail(DetailView):
         stopwords = nltk.corpus.stopwords.words("english")
 
         allWordExceptStopDist = nltk.FreqDist(
-            w.lower() for w in allWords if w not in stopwords
+            w.lower() for w in allWords if w.lower() not in stopwords
         )
 
         # XXX Could use snowball stemmer here (multi language)
@@ -34,6 +35,18 @@ class NoteDetail(DetailView):
             (lemmatizer.lemmatize(word[0]), word[1])
             for word in allWordExceptStopDist.most_common(5)
         ]
+
+        linked_tokens = []
+        for token in tokens:
+            print(token)
+            try:
+                lit = Literal.objects.get(label=token)
+                url = reverse("notes-literal-detail", args=(lit.id,))
+                linked_tokens.append(f"<a class='link' href='{url}'>{token}</a>")
+            except Literal.DoesNotExist:
+                linked_tokens.append(token)
+
+        context["linked_text"] = TreebankWordDetokenizer().detokenize(linked_tokens)
 
         context["statement_form"] = StatementForm()
         return context

@@ -6,7 +6,7 @@
 
 <div class="card bordered">
     <div class="card-body">
-        <p class="text-2xl">{{ note.content }}</p>
+        <p class="text-2xl">{{ linked_text|safe }}</p>
     </div>
     {% if note.source %}
     <div>
@@ -36,7 +36,7 @@
 
 <form method="POST" action="{% url 'notes-note-statement-add' note.pk %}">
     {% csrf_token %}
-    {{ statement_form }}
+    {{ statement_form.as_table }}
     <button class="btn btn-primary">Ajouter</button>
 </form>
 

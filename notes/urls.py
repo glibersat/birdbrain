@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 """
-Urls for experiments application
+Urls for notes application
 
 """
 

@@ -1,5 +1,19 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-Hello
+<div class="hero bg-cover bg-top bg-no-repeat bg-origin-border min-h-screen" style="background-image: url(&quot;{% static '/img/splash.jpg' %}&quot;);">
+    <div class="bg-opacity-60"></div>
+    <div class="text-center hero-content text-neutral-content bg-black bg-opacity-90 ">
+        <div class="max-w-md ">
+            <h1 class="mb-5 text-5xl font-bold">
+                BirdBrain
+            </h1>
+            <p class="mb-5">
+                Take notes from documents. Organize, reference, and browse them.
+            </p>
+            <a href="{% url 'notes-note-create' %}" class="btn btn-primary">Write Note</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -32,5 +32,5 @@ class Note(models.Model):
     created_on = models.DateTimeField(auto_now_add=True)
     updated_on = models.DateTimeField(auto_now=True)
     content = models.TextField()
-    statements = models.ManyToManyField(Statement, blank=True)
+    statements = models.ManyToManyField(Statement, blank=True, related_name="notes")
     source = models.CharField(max_length=1000, blank=True, null=True)

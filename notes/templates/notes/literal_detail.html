@@ -16,6 +16,14 @@
         {{ statement.subject.label }}
         {{ statement.predicate.label }}
         <a class="link" href="{% url 'notes-literal-detail' statement.object.id %}">{{ statement.object.label }}</a>
+        {% if statement.notes.count > 0 %}
+        [
+        {% for note in statement.notes.all %}
+        <a class="link" href="{% url 'notes-note-detail' note.id %}">ref</a>
+        {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        ]
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
@@ -28,6 +36,15 @@
         <a class="link" href="{% url 'notes-literal-detail' statement.subject.id %}">{{ statement.subject.label }}</a>
         {{ statement.predicate.label }}
         {{ statement.object.label }}
+        <a class="link" href="{% url 'notes-literal-detail' statement.object.id %}">{{ statement.object.label }}</a>
+        {% if statement.notes.count > 0 %}
+        [
+        {% for note in statement.notes.all %}
+        <a class="link" href="{% url 'notes-note-detail' note.id %}">ref</a>
+        {% if not forloop.last %}, {% endif %}
+        {% endfor %}
+        ]
+        {% endif %}
     </li>
     {% endfor %}
 </ul>
