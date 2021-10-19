@@ -6,11 +6,26 @@
     font-family: 'Noto Sans Display', sans-serif;
 }
 
+h1 {
+    @apply text-4xl mt-2 mb-2
+}
+
 h2 {
     @apply text-3xl mt-2 mb-2
+}
+
+h3 {
+    @apply text-2xl mt-2 mb-2
 }
 
 input {
     @apply border-0 outline-none !important
 }
 
+a {
+    @apply link
+}
+
+p {
+    @apply mb-4
+}

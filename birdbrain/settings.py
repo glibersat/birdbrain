@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "theme",
     "sass_processor",
     "notes",
+    "documents",
 ]
 
 TAILWIND_APP_NAME = "theme"

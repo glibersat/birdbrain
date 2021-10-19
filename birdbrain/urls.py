@@ -17,7 +17,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from notes.urls import urlpatterns as documents_urls
+from documents.urls import urlpatterns as documents_urls
 from notes.urls import urlpatterns as notes_urls
 from notes.views import Home
 
