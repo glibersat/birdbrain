@@ -38,9 +38,8 @@ class NoteDetail(DetailView):
 
         linked_tokens = []
         for token in tokens:
-            print(token)
             try:
-                lit = Literal.objects.get(label=token)
+                lit = Literal.objects.get(label=token.lower())
                 url = reverse("notes-literal-detail", args=(lit.id,))
                 linked_tokens.append(f"<a class='link' href='{url}'>{token}</a>")
             except Literal.DoesNotExist:
@@ -100,9 +99,11 @@ def note_statement_add(request, note_id):
             predicate_t = form.cleaned_data["predicate"]
             object_t = form.cleaned_data["object"]
 
-            l_subject, created = Literal.objects.get_or_create(label=subject_t)
-            l_predicate, created = Predicate.objects.get_or_create(label=predicate_t)
-            l_object, created = Literal.objects.get_or_create(label=object_t)
+            l_subject, created = Literal.objects.get_or_create(label=subject_t.lower())
+            l_predicate, created = Predicate.objects.get_or_create(
+                label=predicate_t.lower()
+            )
+            l_object, created = Literal.objects.get_or_create(label=object_t.lower())
 
             statement, created = Statement.objects.get_or_create(
                 subject=l_subject, predicate=l_predicate, object=l_object
