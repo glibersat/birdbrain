@@ -2,7 +2,8 @@ django-sass-processor
 django-compressor
 django-tailwind
 libsass
-
+lxml
+nltk
 markdown
 markdown-link-attr-modifier==0.2.0
 markdownify

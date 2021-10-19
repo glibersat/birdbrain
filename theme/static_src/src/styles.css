@@ -22,7 +22,7 @@ input {
     @apply border-0 outline-none !important
 }
 
-a {
+p a {
     @apply link
 }
 
