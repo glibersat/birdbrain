@@ -35,8 +35,7 @@
     <li>
         <a class="link" href="{% url 'notes-literal-detail' statement.subject.id %}">{{ statement.subject.label }}</a>
         {{ statement.predicate.label }}
-        {{ statement.object.label }}
-        <a class="link" href="{% url 'notes-literal-detail' statement.object.id %}">{{ statement.object.label }}</a>
+           <a class="link" href="{% url 'notes-literal-detail' statement.object.id %}">{{ statement.object.label }}</a>
         {% if statement.notes.count > 0 %}
         [
         {% for note in statement.notes.all %}
