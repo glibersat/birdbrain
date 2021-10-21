@@ -3,23 +3,29 @@ from urllib.parse import urljoin
 import markdown
 import nltk
 from bs4 import BeautifulSoup, Comment
+from django.core.validators import FileExtensionValidator
 from django.db import models
+from django.shortcuts import reverse
 from django.utils import timezone
 from markdown_link_attr_modifier import LinkAttrModifierExtension
 from markdownify import markdownify
 from nltk.stem import WordNetLemmatizer
+from polymorphic.models import PolymorphicModel
 
 
-class Document(models.Model):
+class Document(PolymorphicModel):
     created_on = models.DateTimeField(default=timezone.now)
-    uri = models.URLField(unique=True)
+    uri = models.URLField(null=True, unique=True, blank=True)
     content_raw = models.TextField(blank=True)
     content_plain = models.TextField(blank=True)
 
     @property
     def title(self):
-        soup = BeautifulSoup(self.content_raw, "lxml")
-        return soup.title.get_text()
+        if self.content_raw:
+            soup = BeautifulSoup(self.content_raw, "lxml")
+            return soup.title.get_text()
+        else:
+            return "Unknown document"
 
     @property
     def content_html_clean(self):
@@ -63,6 +69,9 @@ class Document(models.Model):
             ],
         )
 
+    def get_absolute_url(self):
+        return reverse("documents-document-detail", args=(self.pk,))
+
     @property
     def tags(self):
         html = self.content_html_clean
@@ -91,3 +100,26 @@ class Document(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class AudioDocument(Document):
+    format = models.CharField(choices=(("MP3", "mp3"),), max_length=10)
+    file = models.FileField(
+        upload_to="documents/audio",
+        validators=[FileExtensionValidator(allowed_extensions=["mp3"])],
+    )
+
+    def __str__(self):
+        return "?"
+
+    def get_absolute_url(self):
+        return reverse("documents-audio-detail", args=(self.pk,))
+
+
+class Annotation(models.Model):
+    document = models.ForeignKey(
+        Document, on_delete=models.CASCADE, related_name="annotations"
+    )
+    start = models.PositiveIntegerField()
+    end = models.PositiveIntegerField()
+    text = models.TextField()

@@ -11,7 +11,7 @@
         {% for document in documents %}
         <div class="card shadow-2xl lg:card-side bg-primary text-primary-content my-1">
             <div class="card-body">
-                <li><a class="" href="{% url 'documents-document-detail' document.pk %}">{{ document.title|default:"document.uri" }}</a> ({{ document.created_on|naturalday }})</li>
+                <li><a class="" href="{{ document.get_absolute_url }}">{{ document.title|default:"document.uri" }}</a> ({{ document.created_on|naturalday }})</li>
             </div>
         </div>
     {% endfor %}

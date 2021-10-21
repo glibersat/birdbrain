@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.humanize",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "polymorphic",
     "tailwind",
     "theme",
     "sass_processor",
@@ -71,6 +72,7 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                "django.template.context_processors.media",
                 "django.template.context_processors.debug",
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
@@ -145,6 +147,10 @@ STATICFILES_FINDERS = [
 ]
 
 SASS_PRECISION = 8
+
+## MEDIA
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

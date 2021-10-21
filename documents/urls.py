@@ -22,6 +22,21 @@ urlpatterns = [
         name="documents-document-list",
     ),
     path(
+        "document/upload",
+        views.document_upload,
+        name="documents-document-upload",
+    ),
+    path(
+        "document/audio/<int:pk>",
+        views.AudioDocumentDetail.as_view(),
+        name="documents-audio-detail",
+    ),
+    path(
+        "document/audio/<int:pk>/transcript",
+        views.transcript_audio_region,
+        name="documents-audio-transcript",
+    ),
+    path(
         "document/<int:pk>",
         views.DocumentDetail.as_view(),
         name="documents-document-detail",

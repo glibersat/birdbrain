@@ -12,6 +12,18 @@
             <input type="text" name="uri" placeholder="ex: http://example.com/b2" class="input input-bordered w-10/12">
             <button class="btn btn-primary w-auto" type="submit">Import</button>
         </form>
+
+        <div class="divider text-gray-500 w-1/4">OR</div> 
+
+        <!-- File upload -->
+        <form method="POST" class="form-control inline" action="{% url 'documents-document-upload' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="label">
+                <span class="label-text text-lg">File Upload (mp3 only atm)</span>
+            </label> 
+            <input type="file" name="file" placeholder="ex: big_talk.mp3" class="input input-bordered w-10/12">
+            <button class="btn btn-primary w-auto" type="submit">Upload</button>
+        </form>
     </div>
 
 </div>

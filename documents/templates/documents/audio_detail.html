@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block javascript %}
+
+<script src="https://unpkg.com/wavesurfer.js"></script>
+<script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.min.js"></script>
+<script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.min.js"></script>
+<script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js"></script>
+<script src="{% static 'js/audio_annotation.js' %}"></script>
+
+<script type="text/javascript">
+
+ document.addEventListener('DOMContentLoaded', function() {
+     init_wavesurfer('{{ MEDIA_URL }}/{{ document.file.name }}');
+ });
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="p-4">
+    <h2 class="mb-4">{{ document.file.name }}</h2>
+
+    <button class="btn btn-primary btn-sm" data-action="play">
+        <span id="play">
+            <i class="glyphicon glyphicon-play"></i>
+            Play
+        </span>
+
+        <span id="pause" style="display: none">
+            <i class="glyphicon glyphicon-pause"></i>
+            Pause
+        </span>
+    </button>
+
+    <div class="rounded border p-4 border-grey horizontal w-full my-4">
+        <p id="subtitle" class="text-center text-info">&nbsp;</p>
+
+        <div id="waveform"></div>
+        <div id="wave-timeline"></div>
+    </div>
+
+    <form role="form" name="edit" style="display: none; transition: 300ms linear; margin: 30px 0;" method="POST" action="{% url 'documents-audio-transcript' document.pk %}">
+        {% csrf_token %}
+        <input type="hidden" class="form-control" id="start" name="start" />
+        <input type="hidden" class="form-control" id="end" name="end" />
+        <div class="form-group">
+            <label for="note">Note</label>
+            <textarea id="note" class="form-control" rows="3" name="note"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-success btn-block">Save</button>
+        <center><i>or</i></center>
+        <button type="button" class="btn btn-danger btn-block" data-action="delete-region">Delete</button>
+    </form>
+
+    <hr/>
+
+    <div>
+        {% for annotation in document.annotations.all %}
+        <p>[{{ annotation.start}}:{{ annotation.end }}] : {{ annotation.text }}</p>
+        {% endfor %}
+    </div>
+
+
+</div>
+{% endblock %}

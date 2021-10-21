@@ -1,11 +1,17 @@
+import tempfile
 import urllib.request
 from urllib.request import urlopen
 
+import magic
+import speech_recognition as sr
 from bs4 import BeautifulSoup
-from django.shortcuts import reverse
-from django.views.generic import CreateView, DetailView, ListView
+from django.http import HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect, reverse
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
+from pydub import AudioSegment
 
-from .models import Document
+from .forms import AudioTranscriptForm, DocumentUploadForm
+from .models import Annotation, AudioDocument, Document
 
 
 class DocumentImport(CreateView):
@@ -52,3 +58,74 @@ class DocumentList(ListView):
 
     model = Document
     context_object_name = "documents"
+
+
+def document_upload(request):
+    if request.method == "POST":
+        form = DocumentUploadForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            file = form.cleaned_data.get("file", False)
+            if not file:
+                return redirect("documents-document-import")
+
+            # Guess file type
+            filetype = magic.from_buffer(file.read(), mime=True)
+
+            document = None
+            print(filetype)
+            # Audio file
+            if filetype == "audio/mpeg":
+                document = AudioDocument.objects.create(
+                    format="mp3", file=request.FILES["file"]
+                )
+
+            if document:
+                return redirect(document.get_absolute_url())
+
+    return redirect("documents-document-import")
+
+
+class AudioDocumentDetail(DetailView):
+    model = AudioDocument
+    template_name = "documents/audio_detail.html"
+    context_object_name = "document"
+
+
+def transcript_audio_region(request, pk):
+    """Transcript a given region from an audio document"""
+    doc = get_object_or_404(AudioDocument, pk=pk)
+
+    if request.method == "POST":
+        form = AudioTranscriptForm(request.POST)
+        if form.is_valid():
+            audio = AudioSegment.from_file("media/audio.mp3", format="mp3")
+            start = float(form.cleaned_data["start"])
+            start_ms = start * 1000  # in ms
+            end = float(form.cleaned_data["end"])
+            end_ms = end * 1000  # in ms
+            if (end - start) <= 0:
+                return HttpResponseBadRequest("Region should be positive")
+
+            region = audio[start_ms:end_ms]
+
+            with tempfile.NamedTemporaryFile(suffix=".wav") as fp:
+                region.export(fp.name, format="wav")
+
+                # Try transcription
+                r = sr.Recognizer()
+                with sr.AudioFile(fp.name) as source:
+                    record = r.record(source)
+                    text = r.recognize_google(record, language="fr-FR")
+
+                    annotation, created = Annotation.objects.get_or_create(
+                        document=doc, start=start, end=end
+                    )
+                    annotation.text = text
+                    annotation.save()
+
+                return redirect("documents-audio-detail", pk=doc.pk)
+        else:
+            return HttpResponseBadRequest("Invalid Form parameters")
+
+    return HttpResponseBadRequest("GET not allowed")
