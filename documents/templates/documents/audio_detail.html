@@ -13,6 +13,15 @@
 
  document.addEventListener('DOMContentLoaded', function() {
      init_wavesurfer('{{ MEDIA_URL }}/{{ document.file.name }}');
+
+     loadRegions([
+         {% for annotation in document.annotations.all %}
+         {"start": {{ annotation.start }},
+          "end": {{ annotation.end }},
+          "data": {"note": "{{ annotation.note }}"},
+         },
+         {% endfor %}
+     ]);
  });
 </script>
 
