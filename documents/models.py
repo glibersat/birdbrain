@@ -116,7 +116,14 @@ class AudioDocument(Document):
         return reverse("documents-audio-detail", args=(self.pk,))
 
 
+class AnnotationManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().order_by("start", "end")
+
+
 class Annotation(models.Model):
+    objects = AnnotationManager()
+
     document = models.ForeignKey(
         Document, on_delete=models.CASCADE, related_name="annotations"
     )

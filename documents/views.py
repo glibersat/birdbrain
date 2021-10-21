@@ -1,3 +1,4 @@
+import os
 import tempfile
 import urllib.request
 from urllib.request import urlopen
@@ -5,10 +6,12 @@ from urllib.request import urlopen
 import magic
 import speech_recognition as sr
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse
-from django.views.generic import CreateView, DetailView, ListView, TemplateView
-from pydub import AudioSegment
+from django.views.generic import (CreateView, DetailView, FormView, ListView,
+                                  TemplateView)
+from pydub import AudioSegment, effects
 
 from .forms import AudioTranscriptForm, DocumentUploadForm
 from .models import Annotation, AudioDocument, Document
@@ -60,30 +63,27 @@ class DocumentList(ListView):
     context_object_name = "documents"
 
 
-def document_upload(request):
-    if request.method == "POST":
-        form = DocumentUploadForm(request.POST, request.FILES)
+class DocumentUpload(FormView):
+    form_class = DocumentUploadForm
 
-        if form.is_valid():
-            file = form.cleaned_data.get("file", False)
-            if not file:
-                return redirect("documents-document-import")
+    def form_valid(self, form):
+        file = form.cleaned_data.get("file", False)
 
-            # Guess file type
-            filetype = magic.from_buffer(file.read(), mime=True)
+        # Guess file type
+        filetype = magic.from_buffer(file.read(), mime=True)
 
-            document = None
-            print(filetype)
-            # Audio file
-            if filetype == "audio/mpeg":
-                document = AudioDocument.objects.create(
-                    format="mp3", file=request.FILES["file"]
-                )
+        document = None
 
-            if document:
-                return redirect(document.get_absolute_url())
+        # Audio file
+        if filetype == "audio/mpeg":
+            document = AudioDocument.objects.create(
+                format="mp3", file=self.request.FILES["file"]
+            )
 
-    return redirect("documents-document-import")
+        if document:
+            return redirect(document.get_absolute_url())
+
+        return redirect("documents-document-import")
 
 
 class AudioDocumentDetail(DetailView):
@@ -99,7 +99,9 @@ def transcript_audio_region(request, pk):
     if request.method == "POST":
         form = AudioTranscriptForm(request.POST)
         if form.is_valid():
-            audio = AudioSegment.from_file("media/audio.mp3", format="mp3")
+            audio = AudioSegment.from_file(
+                os.path.join(settings.MEDIA_ROOT, doc.file.name), format="mp3"
+            )
             start = float(form.cleaned_data["start"])
             start_ms = start * 1000  # in ms
             end = float(form.cleaned_data["end"])
@@ -109,10 +111,13 @@ def transcript_audio_region(request, pk):
 
             region = audio[start_ms:end_ms]
 
+            # normalize
+            region = effects.normalize(region)
+
             with tempfile.NamedTemporaryFile(suffix=".wav") as fp:
                 region.export(fp.name, format="wav")
 
-                # Try transcription
+                # Try transcription using Google services
                 r = sr.Recognizer()
                 with sr.AudioFile(fp.name) as source:
                     record = r.record(source)

@@ -23,7 +23,7 @@ urlpatterns = [
     ),
     path(
         "document/upload",
-        views.document_upload,
+        views.DocumentUpload.as_view(),
         name="documents-document-upload",
     ),
     path(
