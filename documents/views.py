@@ -70,7 +70,7 @@ class DocumentUpload(FormView):
         file = form.cleaned_data.get("file", False)
 
         # Guess file type
-        filetype = magic.from_buffer(file.read(), mime=True)
+        filetype = magic.from_buffer(file.read(1024), mime=True)
 
         document = None
 
