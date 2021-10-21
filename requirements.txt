@@ -11,4 +11,4 @@ beautifulsoup4==4.10.0
 python-magic
 pydub
 SpeechRecognition
-django-polymorphism
+django-polymorphic
