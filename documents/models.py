@@ -23,7 +23,10 @@ class Document(PolymorphicModel):
     def title(self):
         if self.content_raw:
             soup = BeautifulSoup(self.content_raw, "lxml")
-            return soup.title.get_text()
+            try:
+                return soup.title.get_text()
+            except:
+                return "Untitled"
         else:
             return "Unknown document"
 
